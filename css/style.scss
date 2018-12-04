@@ -1,0 +1,347 @@
+
+// =======================================================================================
+//		Global Variables
+// =======================================================================================
+
+// All font sizes are set based on this root pixel value using 'rem'.
+// Other font attributes e.g. line-height should be set relative to the specific
+// font size using 'em'.
+$root-font-size: 16px;
+
+// Background images should use the 'background' mixin or the 'v-grad' mixin. 
+// This is the default bg color.
+$body-background-color: rgba(222,222,222,1);
+$body-font-color: rgba(51,51,51,1);
+
+// Box shadows. These are default attributes for the 'box-shadow' mixin.
+// Horizontal and Vertical offsets and blur defaults are set in the mixin params as zero.
+$default-spread: 12px;
+$shadow-color: rgba(0,0,0,0.3);
+
+
+
+
+
+
+// =======================================================================================
+//		Mixins
+// =======================================================================================
+
+
+//		Structure
+// ------------------------------------------------------------- //
+
+// FLEXBOX LAYOUT
+
+// Handles all the flex vendor prefixes etc
+// @param  $direction  row, row-reverse, column, column-reverse
+// @param  $justify    Horizontal alignment: flex-start, flex-end, center, space-between, space-around, space-evenly
+// @param  $align      Vertical alignment of child els: flex-start, flex-end, center, baseline, stretch
+@mixin display-flex( $direction, $justify, $align, $wrap: wrap ) {
+  display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: $direction;
+  flex-direction: $direction; 
+  -webkit-justify-content: $justify;
+  justify-content: $justify;
+  -webkit-align-items: $align;
+  align-items: $align;
+  -webkit-flex-wrap: $wrap;
+  flex-wrap: $wrap;
+}
+
+// Vertical alignment of a single child el: flex-start, flex-end, center, baseline, stretch
+@mixin align-self( $align ) {
+  -webkit-align-self: $align;
+  align-self: $align;
+}
+
+
+
+//		Skin
+// ------------------------------------------------------------- //
+
+// A simple two-color vertical gradient to an element
+// @param  $top          The color at the top of the gradient
+// @param  $bottom       The color at the bottom of the gradient
+// @param  $top-stop     The percentage to apply the top color stop
+// @param  $bottom-stop  The percentage to apply the bottom color stop
+@mixin v-grad( $top, $bottom, $top-stop: 0%, $bottom-stop: 100% ) {
+  background: $top;
+  background: linear-gradient( to bottom, $top $top-stop, $bottom $bottom-stop );
+}
+
+
+//Applies the desired background to an element
+// @param  $color        The background color
+// @param  $image        The path and filename of the bg image
+// @param  $position     The bg image position ( 'x, y' )
+// @param  $repeat       The bg repeat ( 'repeat', 'no-repeat' )
+// @param  $size       	 The bg size 
+@mixin background( $color, $image: none, $position: 0 0, $repeat: repeat, $size: auto ) {
+  @if $image != none {    
+    background: $color url($image) $position $repeat;
+    
+    @if $size != '' {
+    	background-size: $size;
+    }
+    
+  } @else { 
+  	background: $color;  
+  }  
+}
+
+// Applies a box shadow to the element
+// @param  $set        Boolean: set a box shadow?
+// @param  $h-offset   Horizontal offset
+// @param  $v-offset   Vertical offset
+// @param  $blur       Blur radius
+// @param  $spread     Shadow distance / spread 
+// @param  $color      Shadow color 
+@mixin box-shadow( $set: false, $h-offset: 0, $v-offset: 0, $blur: 0, $spread: $default-spread ) {
+  @if $set == true {  
+  	-webkit-box-shadow: $h-offset $v-offset $blur $spread $shadow-color;
+  	box-shadow: $h-offset $v-offset $blur $spread $shadow-color;  
+  }
+}
+
+
+
+//		Objects and Elements
+// ------------------------------------------------------------- //
+
+// Form Input field placeholder styles
+// @param  $style      e.g. 'italic'
+// @param  $color      Text color 
+@mixin placeholders( $style, $color ) {
+  #form-ps ::-webkit-input-placeholder { font-style: $style; color: $color; }
+	#form-ps ::-moz-placeholder { font-style: $style; color: $color; }
+	#form-ps :-ms-input-placeholder { font-style: $style; color: $color; }
+	#form-ps :-moz-placeholder { font-style: $style; color: $color; }
+}
+
+
+// Forces content to a single line and truncates extra text with an ellipsis
+@mixin ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+// Adds a clearfix after the tag of an element
+@mixin clearfix {
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+
+
+//		Responsive User Interface Techniques
+//    Sources for inspiration below:
+//    https://glennmccomb.com/articles/useful-sass-scss-media-query-mixins-for-bootstrap/
+//    https://www.smashingmagazine.com/2018/02/media-queries-responsive-design-2018/
+// ------------------------------------------------------------- //
+
+
+// MEDIA QUERIES (our fallback)
+
+// Map the MQ breakpoints.
+// EX: $breakpoint: map-get($breakpoints, sm);
+$breakpoints: (
+  xs: 380px, // 0 to 379px
+  sm: 600px, // 380px to 599px
+  md: 820px, // 600px to 819px
+  lg: 1040px // 820px to 1039px
+);
+
+// Sets a 'mobile-first' media query
+// @param $breakpoint Keyword used to access the desired value from the '$breakpoints' map
+@mixin media-query ($breakpoint) {
+
+  // Using Sass’ map-has-key function, confirm the breakpoint exists in the map.
+  @if map-has-key($breakpoints, $breakpoint) {
+
+    // Get the breakpoint value
+    $breakpoint-value: map-get($breakpoints, $breakpoint);
+
+    // Write the media query
+    @media (min-width: $breakpoint-value) {
+      @content; // Sass' @content directive passes in the content block
+    }
+
+  // If the breakpoint doesn't exist in the map
+  } @else {
+
+    // Log a warning.
+    @warn 'Invalid breakpoint: #{$breakpoint}.';
+  }
+}
+
+// Example:
+// @include media-query(sm) {
+//   .element {
+//      font-weight: bold;
+//   }
+// }
+
+// Result:
+// @media (min-width: 600px) {
+//   .element {
+//      font-weight: bold;
+//   }
+// }
+
+
+// USING FLEXBOX (our preferred method)
+// Used in conjunction with the 'display-flex' mixin above under 'Structure'
+
+// The shorthand for flex-grow, flex-shrink and flex-basis combined
+// Flex-basis is the key here. This is the default size of the element before 
+// the remaining space is distributed 
+// Flex-grow and flex-shrink are always defaulted to a value of 1 so the distribution of space is equal
+// amongst the child elements
+// @param $basis Flex-basis value as a defined length (px, em, %)
+@mixin flex-rui( $basis ) {
+  -webkit-flex: 1 1 $basis;
+  flex: 1 1 $basis;
+}
+
+// Example:
+// .container {
+//    @include display-flex( 'wrap', 'row', 'space-evenly', 'flex-start' );
+// }
+// .container > * {
+//    @include flex-rui( '320px' );
+// }
+
+// Result:
+// Suppose there are two child elements of .container
+// when the width of the container falls below 640 pixels, the two 'row' elements
+// will wrap and their respective widths will stretch to fill the width of the 
+// container below 640px (since flex-grow has a value of 1)
+
+
+
+// =======================================================================================
+//		The Styles
+// =======================================================================================
+
+html {
+  font-size: $root-font-size;
+}
+
+body {
+  padding: 0 20px;
+  font-family: 'Open Sans', verdana, sans-serif;
+  color: #333;
+}
+
+header {
+  padding: 20px;
+  text-align: center;
+}
+
+p {
+  margin: 0 0 12px;
+}
+
+a {
+  color: #A6432A;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  padding: 20px 0;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+footer a {
+  text-decoration: none;
+}
+
+//		Structure
+// =======================================================================================
+
+#page-flex {
+  @include display-flex( row, space-evenly, flex-start );
+  margin: 0 auto;
+  max-width: map-get($breakpoints,md);
+}
+
+#page-flex > section {
+  @include flex-rui( 200px );
+  height: 260px;
+  padding: 4px;
+  perspective: 1000px;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  position: relative;
+}
+
+.card.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  line-height: 1.2em;
+  color: #333;
+  backface-visibility: hidden;
+  border-radius: 24px;
+}
+
+.front {
+  @include display-flex( column, center, center );
+  color: rgba(60,142,178,1);
+  border: 2px solid #ccc;
+  background: rgba(231,231,231,1);
+  transform: rotateY(180deg);
+}
+
+.front i {
+  font-size: 4rem;
+}
+
+.back {
+  border: 2px solid rgba(60,142,178,1);
+  background: rgba(89,159,190,1) url(../img/hoffman.png) 0 0 repeat;
+}
+
+
+
+//		Skin
+// =======================================================================================
+
+
+
+
+
+
+
+//		...
+// =======================================================================================
+
+
+
+
+
+

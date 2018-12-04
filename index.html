@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Template</title>
+    <meta name="viewport" content="target-densitydpi=device-dpi,width=device-width,initial-scale=1,minimum-scale=1.0, maximum-scale=1.0"/>
+		<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans|Slabo+27px" rel="stylesheet">
+		<link href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" rel="stylesheet" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="css/n.css" />
+    <link rel="stylesheet" href="css/style-sass.css" />
+    
+    <!-- DEV CSS -->
+    <style type="text/css">
+    
+    </style>
+    
+    
+    <!-- HTML TEMPLATES -->
+    <script id="card-template" type="text/template">
+			<section>
+          <div class="card">
+            <div class="face front">{{icon}}<p>{{text}}</p></div>
+            <div class="face back"></div>
+          </div>
+        </section>
+		</script>
+    
+    
+    <!-- EXTERNAL DATA FILES -->
+    <script type="text/javascript" src="js/sitedata.js"></script>
+    <script type="text/javascript" src="js/obfusemail.js"></script>
+
+  </head>
+  <body>
+
+<header>
+<h1> Responsive UX with Flex </h1>
+</header>
+
+<div id="page-flex">
+  <p>
+    CSS Flexbox allows us to create a responsive UX that is responsive to internal elements rather than 
+    the viewport width using Media Queries. It is far more easier to implement IMHO. It may not always 
+    provide the exact behavior we desire or expect but I can see where there could be many applications 
+    of its use, especially if we combine its use with media queries.
+  </p>
+  <p>
+    This demo creates a grid layout. Each card container sets the values of flex-grow and flex-shrink to 1, 
+    which allows the card to grow and shrink to fill out the width of the parent element. The value of 
+    flex-basis is the key. In this demo, each card container's width is determined by the value of flex-basis, 
+    in this case 200 pixels. This defines the default size of the container before the remaining space is distributed. 
+    The parent container has a max-width of 820px, which provides space for 4 cards in each row. In the last row 
+    there are only 2 cards, which grow to fill the allowed space. If the viewport is narrowed below the max-width, 
+    the number of cards on a row adjusts and the cards in the row grow to fill the space.
+  </p>
+
+</div>
+
+<footer>
+  <p>
+    <script type="text/javascript">
+      obfusemail();
+    </script>
+  </p>
+  <p><a href="http://kennethmdouglass.com" class="new-win">kennethmdouglass.com</a></p>
+</footer>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
+  <script type="text/javascript" src="js/_main.js"></script>
+
+    </body> 
+</html>
